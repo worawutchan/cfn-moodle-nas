@@ -14,7 +14,6 @@ Metadata:
         - Subnet
         - PublicAlbTargetGroupArn
         - PublicAlbHostname
-        - SslCertificate
         - NasPrivateIp
     - Label:
         default: Moodle Parameters
@@ -50,8 +49,6 @@ Metadata:
         default: Public ALB Target Group Arn
       PublicAlbHostname:
         default: Public ALB Hostname
-      SslCertificate:
-        default: ACM Cert attached to Public ALB
       Subnet:
         default: Subnets
       WebAsgMax:
@@ -115,14 +112,6 @@ Parameters:
   PublicAlbHostname:
     Description: The hostname of the public ALB http form (e.g. http://abdc-12345-xyz.<region>.elb.amazonaws.com)
     Type: String
-  SslCertificate:
-    AllowedValues:
-      - True
-      - False
-    Default: True
-    Description: Is there an ACM SSL Certificate attached to the Public ALB?
-    Type:
-      String
   Subnet:
     Description: Select existing subnets. The number selected must match the number of subnets above. Subnets selected must be in separate AZs.
     Type: List<AWS::EC2::Subnet::Id>
