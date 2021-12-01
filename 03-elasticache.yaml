@@ -10,7 +10,10 @@ Metadata:
         - ElastiCacheClusterName
         - ElastiCacheSecurityGroup
         - Subnet
+        - NumberOfAZs
     ParameterLabels:
+      NumberOfAZs:
+        default: Number of Availability Zones
       ElastiCacheClusterName:
         default: Cache Cluster Name
       ElastiCacheNodeType:
@@ -21,6 +24,17 @@ Metadata:
         default: Subnets
 
 Parameters:
+  NumberOfAZs:
+    AllowedValues:
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    Default: 2
+    Description: Number of Availability Zones to use in the VPC. This must match your
+      selections in the list of Availability Zones parameter.
+    Type: Number
   ElastiCacheClusterName:
     AllowedPattern: ^([a-zA-Z0-9]*)$
     Description: The ElastiCache cluster name. Defaults to the Amazon RDS database name.
@@ -73,8 +87,7 @@ Resources:
       CacheSubnetGroupName: !Ref ElastiCacheSubnetGroup
       ClusterName: !Ref ElastiCacheClusterName
       Engine: memcached
-      NumCacheNodes:
-        !Ref NumberOfSubnets
+      NumCacheNodes: !Ref NumberOfAZs
       Tags:
         - Key: Name
           Value: !Join [ '', [ 'Moodle / ', !Ref 'AWS::StackName' ] ]
