@@ -12,7 +12,6 @@ Metadata:
         - EC2KeyName
         - BastionInstanceType
         - BastionSecurityGroup
-        - NumberOfSubnets
         - Subnet
     ParameterLabels:
       BastionSecurityGroup:
@@ -21,8 +20,6 @@ Metadata:
         default: Instance Type
       EC2KeyName:
         default: Existing Key Pair
-      NumberOfSubnets:
-        default: Number of subnets
       Subnet:
         default: Subnets
 
