@@ -1,10 +1,6 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates Route 53 record set (if selected)
-
 Metadata:
-
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -25,7 +21,6 @@ Metadata:
         default: Hosted Zone Name
 
 Parameters:
-
   DnsEndpoint:
     AllowedPattern: ^(?!http)(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
     Description: The DNS endpoint - CloudFront DNS if using CloudFront else Public ELB DNS name.

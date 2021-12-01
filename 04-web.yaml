@@ -1,10 +1,6 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates Moodle web Auto Scaling group
-
 Metadata:
-
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:

@@ -1,8 +1,5 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates RDS Aurora database cluster
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:

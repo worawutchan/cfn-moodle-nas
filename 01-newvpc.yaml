@@ -1,11 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates New VPC
-
 Metadata:
-
   AWS::CloudFormation::Interface:
-
     ParameterGroups:
     - Label:
         default: Amazon VPC Parameters
@@ -13,7 +9,6 @@ Metadata:
       - NumberOfAZs
       - AvailabilityZones
       - VpcCidr
-      - VpcTenancy
       - PublicSubnet0Cidr
       - PublicSubnet1Cidr
       - PublicSubnet2Cidr
@@ -39,8 +34,6 @@ Metadata:
         default: Number of Availability Zones
       VpcCidr:
         default: VpcCidr
-      VpcTenancy:
-        default: VpcTenancy
       PublicSubnet0Cidr:
         default: Public Subnet 0
       PublicSubnet1Cidr:

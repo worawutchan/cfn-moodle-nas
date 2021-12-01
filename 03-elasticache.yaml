@@ -1,10 +1,6 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates ElastiCache cache cluster
-
 Metadata:
-
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -28,7 +24,6 @@ Metadata:
         default: Subnets
 
 Parameters:
-
   ElastiCacheClusterName:
     AllowedPattern: ^([a-zA-Z0-9]*)$
     Description: The ElastiCache cluster name. Defaults to the Amazon RDS database name.

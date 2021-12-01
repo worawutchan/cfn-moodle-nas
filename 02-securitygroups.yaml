@@ -1,8 +1,5 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Reference Architecture to host Moodle on AWS - Creates VPC security groups
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
