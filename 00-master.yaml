@@ -789,7 +789,7 @@ Resources:
           !Ref DataSubnet4Cidr
         DataSubnet5Cidr:
           !Ref DataSubnet5Cidr
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/01-newvpc.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/01-newvpc.yaml
   securitygroups:
     DependsOn: vpc
     Type: AWS::CloudFormation::Stack
@@ -801,7 +801,7 @@ Resources:
           !Ref SshAccessCidr
         Vpc:
           !GetAtt [ vpc, Outputs.Vpc ]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/02-securitygroups.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/02-securitygroups.yaml
   bastion:
     DependsOn: securitygroups
     Type: AWS::CloudFormation::Stack
@@ -817,7 +817,7 @@ Resources:
           !Ref NumberOfAZs
         Subnet:
           !GetAtt [ vpc, Outputs.PublicSubnet ]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-bastion.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-bastion.yaml
   publicalb:
     DependsOn: securitygroups
     Type: AWS::CloudFormation::Stack
@@ -833,7 +833,7 @@ Resources:
           !GetAtt [ securitygroups, Outputs.PublicAlbSecurityGroup ]
         Vpc:
           !GetAtt [ vpc, Outputs.Vpc ]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-publicalb.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-publicalb.yaml
   rds:
     DependsOn: [ securitygroups, nas ]
     Type: AWS::CloudFormation::Stack
@@ -861,7 +861,7 @@ Resources:
           !GetAtt [ vpc, Outputs.DataSubnet ]
         NumberOfSubnets:
           !Ref NumberOfAZs
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-rds.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-rds.yaml
   sessioncache:
     Condition: DeployWithSessionCache
     DependsOn: securitygroups
@@ -878,7 +878,7 @@ Resources:
           !GetAtt [ securitygroups, Outputs.ElastiCacheSecurityGroup ]
         NumberOfSubnets:
           !Ref NumberOfAZs
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-elasticache.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-elasticache.yaml
   applicationcache:
     Condition: DeployApplicationCache
     DependsOn: securitygroups
@@ -895,7 +895,7 @@ Resources:
           !GetAtt [ securitygroups, Outputs.ElastiCacheSecurityGroup ]
         NumberOfSubnets:
           !Ref NumberOfAZs
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-elasticache.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-elasticache.yaml
   webnocache:
     DependsOn: [ publicalb, rds ]
     Condition: DeployWithoutSessionCache
@@ -940,7 +940,7 @@ Resources:
           ''
         NasPrivateIp:
           !GetAtt [ nas, Outputs.NasPrivateIp]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/04-web.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/04-web.yaml
   webcached:
     DependsOn: [ publicalb, rds, sessioncache ]
     Condition: DeployWithSessionCache
@@ -985,7 +985,7 @@ Resources:
           !GetAtt sessioncache.Outputs.ElastiCacheClusterEndpointAddress
         NasPrivateIp:
           !GetAtt [ nas, Outputs.NasPrivateIp]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/04-web.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/04-web.yaml
   cloudfront:
     Condition: DeployCloudFront
     DependsOn: publicalb    
@@ -998,7 +998,7 @@ Resources:
           !GetAtt [ publicalb, Outputs.PublicAlbDnsName ]
         DomainName:
           !Ref DomainName
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/04-cloudfront.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/04-cloudfront.yaml
   route53:
     Condition: DeployRoute53
     DependsOn: publicalb
@@ -1013,7 +1013,7 @@ Resources:
           !Ref HostedZoneName
         DomainName:
           !Ref DomainName
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/05-route53.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/05-route53.yaml
   nas:
     DependsOn: securitygroups
     Type: AWS::CloudFormation::Stack
@@ -1031,7 +1031,7 @@ Resources:
           !GetAtt [ securitygroups, Outputs.NasSecurityGroup ]
         Subnet:
           !GetAtt [ vpc, Outputs.DataSubnet0 ]
-      TemplateURL: https://s3worawuch.s3-ap-southeast-1.amazonaws.com/cfm-moodle-nasv1/03-nas.yaml
+      TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-nas.yaml
 
 Outputs:
   DnsName:
