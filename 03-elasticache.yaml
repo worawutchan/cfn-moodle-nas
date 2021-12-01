@@ -9,7 +9,6 @@ Metadata:
         - ElastiCacheNodeType
         - ElastiCacheClusterName
         - ElastiCacheSecurityGroup
-        - NumberOfSubnets
         - Subnet
     ParameterLabels:
       ElastiCacheClusterName:
@@ -18,8 +17,6 @@ Metadata:
         default: Cache Cluster Node Type
       ElastiCacheSecurityGroup:
         default: ElastiCache Security Group
-      NumberOfSubnets:
-        default: Number of subnets
       Subnet:
         default: Subnets
 
@@ -63,63 +60,11 @@ Parameters:
   ElastiCacheSecurityGroup:
     Description: Select the ElastiCache security group.
     Type: AWS::EC2::SecurityGroup::Id
-  NumberOfSubnets:
-    AllowedValues:
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    Default: 3
-    Description: Number of subnets. This must match your selections in the list of subnets below.
-    Type: String 
   Subnet:
     Description: Select existing subnets. The number selected must match the number of subnets above. Subnets selected must be in separate AZs.
     Type: List<AWS::EC2::Subnet::Id>
 
-Conditions:
-
-  NumberOfSubnets1:
-      !Equals [ 1, !Ref NumberOfSubnets ]
-  NumberOfSubnets2:
-      !Equals [ 2, !Ref NumberOfSubnets ]
-  NumberOfSubnets3:
-      !Equals [ 3, !Ref NumberOfSubnets ]
-  NumberOfSubnets4:
-      !Equals [ 4, !Ref NumberOfSubnets ]
-  NumberOfSubnets5:
-      !Equals [ 5, !Ref NumberOfSubnets ]
-  NumberOfSubnets6:
-      !Equals [ 6, !Ref NumberOfSubnets ]
-  Subnet0: !Or
-    - !Condition NumberOfSubnets1
-    - !Condition NumberOfSubnets2
-    - !Condition NumberOfSubnets3
-    - !Condition NumberOfSubnets4
-    - !Condition NumberOfSubnets5
-    - !Condition NumberOfSubnets6
-  Subnet1: !Or
-    - !Condition NumberOfSubnets2
-    - !Condition NumberOfSubnets3
-    - !Condition NumberOfSubnets4
-    - !Condition NumberOfSubnets5
-    - !Condition NumberOfSubnets6
-  Subnet2: !Or
-    - !Condition NumberOfSubnets3
-    - !Condition NumberOfSubnets4
-    - !Condition NumberOfSubnets5
-    - !Condition NumberOfSubnets6
-  Subnet3: !Or
-    - !Condition NumberOfSubnets4
-    - !Condition NumberOfSubnets5
-    - !Condition NumberOfSubnets6
-  Subnet4: !Or
-    - !Condition NumberOfSubnets5
-    - !Condition NumberOfSubnets6
-  Subnet5: !Condition NumberOfSubnets6
-
 Resources:
-
   ElastiCacheCluster:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
@@ -140,28 +85,8 @@ Resources:
     Properties: 
       CacheSubnetGroupName: !Join [ '', [ !Ref ElastiCacheClusterName, SubnetGroup ] ]
       Description: ElastiCache Subnet Group for Moodle
-      SubnetIds: 
-        !If
-          [ NumberOfSubnets1,
-          [ !Select [ 0, !Ref Subnet ] ],
-          !If
-            [ NumberOfSubnets2,
-            [ !Select [ 0, !Ref Subnet ], !Select [ 1, !Ref Subnet ] ],
-            !If
-              [ NumberOfSubnets3,
-              [ !Select [ 0, !Ref Subnet ], !Select [ 1, !Ref Subnet ], !Select [ 2, !Ref Subnet ] ],
-              !If
-                [ NumberOfSubnets4,
-                [ !Select [ 0, !Ref Subnet ], !Select [ 1, !Ref Subnet ], !Select [ 2, !Ref Subnet ], !Select [ 3, !Ref Subnet ] ],
-                !If
-                  [ NumberOfSubnets5,
-                  [ !Select [ 0, !Ref Subnet ], !Select [ 1, !Ref Subnet ], !Select [ 2, !Ref Subnet ], !Select [ 3, !Ref Subnet ], !Select [ 4, !Ref Subnet ] ],
-                  [ !Select [ 0, !Ref Subnet ], !Select [ 1, !Ref Subnet ], !Select [ 2, !Ref Subnet ], !Select [ 3, !Ref Subnet ], !Select [ 4, !Ref Subnet ], !Select [ 5, !Ref Subnet ] ]
-                  ]
-                ]
-              ]
-            ]
-          ]
+      SubnetIds: !Ref Subnet
+
 Outputs:
   ElastiCacheClusterEndpointAddress:
     Value: !GetAtt ElastiCacheCluster.ConfigurationEndpoint.Address
