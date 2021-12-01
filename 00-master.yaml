@@ -677,7 +677,7 @@ Resources:
           !Ref SessionCacheNodeType
         ElastiCacheSecurityGroup:
           !GetAtt [ securitygroups, Outputs.ElastiCacheSecurityGroup ]
-        NumberOfSubnets:
+        NumberOfAZs:
           !Ref NumberOfAZs
       TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-elasticache.yaml
   applicationcache:
@@ -715,8 +715,6 @@ Resources:
           !Ref DatabaseName
         EC2KeyName:
           !Ref EC2KeyName
-        NumberOfSubnets:
-          !Ref NumberOfAZs
         PublicAlbTargetGroupArn:
           !GetAtt [ publicalb, Outputs.PublicAlbTargetGroupArn ]
         PublicAlbHostname:
@@ -760,8 +758,6 @@ Resources:
           !Ref DatabaseName
         EC2KeyName:
           !Ref EC2KeyName
-        NumberOfSubnets:
-          !Ref NumberOfAZs
         PublicAlbTargetGroupArn:
           !GetAtt [ publicalb, Outputs.PublicAlbTargetGroupArn ]
         PublicAlbHostname:
