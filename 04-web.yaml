@@ -311,6 +311,7 @@ Resources:
   Logs: 
       Type: AWS::Logs::LogGroup
       DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
       Properties: 
         RetentionInDays: 7
   WebAutoScalingGroup:
