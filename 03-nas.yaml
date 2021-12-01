@@ -1,0 +1,126 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Reference Architecture to host Moodle on AWS - Creates Moodle NAS
+
+Metadata:
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: NAS Parameters
+      Parameters:
+        - EC2KeyName
+        - NasInstanceType
+        - NasSecurityGroup
+        - NasInstanceAdditionalDiskType
+        - NasInstanceAdditionalDiskSize
+        - Subnet
+    ParameterLabels:
+      EC2KeyName:
+        default: Existing Key Pair
+      Subnet:
+        default: Subnet
+      NasInstanceType:
+        default: NAS Tier Instance Type
+      NasInstanceAdditionalDiskType:
+        default: NAS Tier Instance Additional Disk Type
+      NasInstanceAdditionalDiskSize:
+        default: NAS Tier Instance Additional Disk Size
+
+Parameters:
+
+  EC2KeyName:
+    AllowedPattern: ^([a-zA-Z0-9 @.`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: Must be letters (upper or lower), numbers, and special characters.
+    Description: Name of an EC2 KeyPair. Your bastion & Web instances will launch with this KeyPair.
+    Type: AWS::EC2::KeyPair::KeyName
+  Subnet:
+    Description: Select existing subnets. The number selected must match the number of subnets above. Subnets selected must be in separate AZs.
+    Type: String
+  NasSecurityGroup:
+    Description: Select the web security group.
+    Type: AWS::EC2::SecurityGroup::Id
+  NasInstanceType:
+    AllowedValues:
+      - a1.medium
+      - a1.large
+      - a1.xlarge
+      - a1.2xlarge
+      - a1.4xlarge
+    ConstraintDescription: Must be a valid Amazon EC2 instance type.
+    Default: a1.large
+    Description: The Amazon EC2 ARM instance type for your nas instance.
+    Type: String
+  NasInstanceAdditionalDiskType:
+    AllowedValues:
+      - gp3
+    ConstraintDescription: Must be a valid Amazon EC2 EBS type.
+    Default: gp3
+    Description: The Amazon EC2 EBS type for your nas instance.
+    Type: String
+  NasInstanceAdditionalDiskSize:
+    ConstraintDescription: Must be a valid Amazon EC2 EBS Size.
+    Default: 50
+    Description: The Amazon EC2 EBS size for your nas instance.
+    Type: String
+  LatestAmiId :
+    Type : AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-arm64-gp2
+
+Resources:
+  MyEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties:
+      SubnetId: !Ref Subnet
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref NasInstanceType
+      KeyName: !Ref EC2KeyName
+      SecurityGroupIds:
+        - !Ref NasSecurityGroup
+      BlockDeviceMappings: 
+        - DeviceName: "/dev/sdb"
+          Ebs: 
+            VolumeType: !Ref NasInstanceAdditionalDiskType
+            DeleteOnTermination: true
+            VolumeSize: !Ref NasInstanceAdditionalDiskSize
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'NAS / ', !Ref 'AWS::StackName' ] ]
+      UserData:
+        "Fn::Base64":
+          !Sub |
+            #!/bin/bash -xe
+            yum update -y
+            
+            #Create directory structure
+            mkdir -p /nas-moodle
+            
+            #Formate disk
+            mkfs.ext4 /dev/sdb
+
+            #Mount disk
+            mount /dev/sdb /nas-moodle
+
+            #Create auto mount
+            echo '/dev/sdb  /nas-moodle ext4  defaults  0 0' >> /etc/fstab
+
+            #Create moodle folder
+            mkdir /nas-moodle/data
+            mkdir /nas-moodle/cache
+            mkdir /nas-moodle/temp
+
+            #Export paths
+            echo '/nas-moodle/data        *(rw,sync,no_root_squash)' >> /etc/exports
+            echo '/nas-moodle/cache        *(rw,sync,no_root_squash)' >> /etc/exports
+            echo '/nas-moodle/temp        *(rw,sync,no_root_squash)' >> /etc/exports
+
+            #Start NFS Server
+            systemctl start nfs-server
+            systemctl enable nfs-server
+
+Outputs:
+  NasPrivateIp:
+    Value: !GetAtt MyEC2Instance.PrivateIp
+  
+      
