@@ -330,6 +330,7 @@ Parameters:
   DatabasePort:
     ConstraintDescription: Must be a valid RDS instance port.
     Description: The Amazon RDS database port.
+    Default: 3306
     Type: String
   DatabaseMasterUsername:
     AllowedPattern: ^([a-zA-Z0-9]*)$
@@ -685,14 +686,14 @@ Parameters:
     AllowedValues:
       - true
       - false
-    Default: true
+    Default: false
     Description: Specifies whether a CloudFront Distribution should be created to serve the Moodle website content.
     Type: String
   UseRoute53Boolean:
     AllowedValues:
       - true
       - false
-    Default: true
+    Default: false
     Description: Specifies whether a record set should be created in Route 53 for your Moodle domain name.
     Type: String
   NasInstanceType:
@@ -813,8 +814,6 @@ Resources:
           !GetAtt [ securitygroups, Outputs.BastionSecurityGroup ]
         EC2KeyName:
           !Ref EC2KeyName
-        NumberOfSubnets:
-          !Ref NumberOfAZs
         Subnet:
           !GetAtt [ vpc, Outputs.PublicSubnet ]
       TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/03-bastion.yaml
