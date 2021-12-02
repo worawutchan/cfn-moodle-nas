@@ -1702,12 +1702,13 @@ Resources:
             echo '${NasPrivateIp}:/nas-moodle/cache /var/www/moodle/cache  nfs nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2  0 0' >> /etc/fstab
             echo '${NasPrivateIp}:/nas-moodle/temp /var/www/moodle/temp  nfs nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2  0 0' >> /etc/fstab
 
-            #Run CloudFormation Init Scripts
-            /opt/aws/bin/cfn-init --configsets deploy_webserver --verbose --stack ${AWS::StackName} --resource WebLaunchConfiguration --region ${AWS::Region}
-            /opt/aws/bin/cfn-signal --exit-code $? --stack ${AWS::StackName} --resource WebAutoScalingGroup --region ${AWS::Region}
             #Run CloudFormation Init Script to install CloudWatch Agent
             yum install -y amazon-cloudwatch-agent
             /opt/aws/bin/cfn-init --configsets default --verbose --stack ${AWS::StackName} --resource WebLaunchConfiguration --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal --exit-code $? --stack ${AWS::StackName} --resource WebAutoScalingGroup --region ${AWS::Region}
+
+            #Run CloudFormation Init Scripts
+            /opt/aws/bin/cfn-init --configsets deploy_webserver --verbose --stack ${AWS::StackName} --resource WebLaunchConfiguration --region ${AWS::Region}
             /opt/aws/bin/cfn-signal --exit-code $? --stack ${AWS::StackName} --resource WebAutoScalingGroup --region ${AWS::Region}
 
 Outputs:
