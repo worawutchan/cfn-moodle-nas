@@ -1705,7 +1705,6 @@ Resources:
             #Run CloudFormation Init Script to install CloudWatch Agent
             yum install -y amazon-cloudwatch-agent
             /opt/aws/bin/cfn-init --configsets default --verbose --stack ${AWS::StackName} --resource WebLaunchConfiguration --region ${AWS::Region}
-            /opt/aws/bin/cfn-signal --exit-code $? --stack ${AWS::StackName} --resource WebAutoScalingGroup --region ${AWS::Region}
 
             #Run CloudFormation Init Scripts
             /opt/aws/bin/cfn-init --configsets deploy_webserver --verbose --stack ${AWS::StackName} --resource WebLaunchConfiguration --region ${AWS::Region}
