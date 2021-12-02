@@ -808,7 +808,7 @@ Resources:
           !Ref DomainName
       TemplateURL: https://worawuch-test-moodle.s3.ap-southeast-1.amazonaws.com/cfm-moodle-nasv2/05-route53.yaml
   nas:
-    DependsOn: securitygroups
+    DependsOn: [securitygroups, bastion]
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
