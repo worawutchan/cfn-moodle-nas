@@ -416,7 +416,7 @@ Resources:
                content: !Sub |
                  [cfn-auto-reloader-hook]
                  triggers=post.update
-                 path=Resources.EC2Instance.Metadata.AWS::CloudFormation::Init.02_config-amazon-cloudwatch-agent
+                 path=Resources.WebLaunchConfiguration.Metadata.AWS::CloudFormation::Init.02_config-amazon-cloudwatch-agent
                  action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource WebLaunchConfiguration --region ${AWS::Region} --configsets UpdateEnvironment
                  runas=root
                mode: '000400'
