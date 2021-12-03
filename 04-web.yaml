@@ -1592,6 +1592,8 @@ Resources:
                 wget -O /var/www/moodle/html/lib/aws.phar https://docs.aws.amazon.com/aws-sdk-php/v3/download/aws.phar
                 cp /tmp/config.php /var/www/moodle/html/config.php
                 chown -R apache:apache /var/www/moodle
+                echo "* * * * * /usr/bin/php /var/www/moodle/html/admin/cli/cron.php > /dev/null" > /etc/cron.d/moodle_cron.txt
+                crontab -u apache /etc/cron.d/moodle_cron.txt
                 
               mode: 000500
               owner: root
